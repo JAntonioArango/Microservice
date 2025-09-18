@@ -1,0 +1,13 @@
+services:
+
+  microservices-task:
+    build: .
+    container_name: microservices-task
+    ports:
+      - "8181:8181"
+    environment:
+      - EUREKA_URI=http://localhost:8762/eureka
+
+networks:
+  eureka-net:
+    driver: bridge
