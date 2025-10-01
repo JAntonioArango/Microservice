@@ -19,7 +19,7 @@ public class WorkloadController {
     public ResponseEntity<TrainerWorkload> saveTrainerWorkload(
             @RequestBody TrainerWorkload trainerWorkload) {
 
-        return ResponseEntity.ok(workloadService.saveWorkload(trainerWorkload));
+        return ResponseEntity.ok(trainerWorkload);
     }
 
     @GetMapping("/summary/{username}")

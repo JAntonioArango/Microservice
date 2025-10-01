@@ -7,6 +7,12 @@ spring:
     console:
       enabled: true
 
+  artemis:
+    mode: native
+    broker-url: ${SPRING_ARTEMIS_BROKER_URL:tcp://localhost:61616}
+    user: ${SPRING_ARTEMIS_USER:artemis}
+    password: ${SPRING_ARTEMIS_PASSWORD:artemis}
+
   datasource:
     url: jdbc:h2:mem:microdb
     driverClassName: org.h2.Driver
@@ -38,3 +44,9 @@ eureka:
     lease-renewal-interval-in-seconds: 30
     lease-expiration-duration-in-seconds: 90
 
+app:
+  queue: Asynchronous.Task
+
+logging:
+  level:
+    org.springframework.jms: INFO

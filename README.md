@@ -16,6 +16,7 @@ It's designed to work as part of a microservices architecture with Eureka servic
 
 - **Workload Management**: Save, retrieve, and delete trainer workload records
 - **Workload Summary**: Get comprehensive workload summaries by trainer username
+- **Asynchronous Processing**: JMS message consumer for workload data processing
 - **Service Discovery**: Eureka client integration for microservices architecture
 - **In-Memory Database**: H2 database for development and testing
 - **Health Monitoring**: Spring Boot Actuator for health checks
@@ -28,6 +29,7 @@ It's designed to work as part of a microservices architecture with Eureka servic
 - **<span style="color: #4169E1;">Spring Cloud 2023.0.6</span>**
 - **<span style="color: #4169E1;">Spring Data JPA</span>**
 - **<span style="color: #4169E1;">H2 Database</span>**
+- **<span style="color: #4169E1;">Apache Artemis JMS</span>**
 - **<span style="color: #4169E1;">Eureka Client</span>**
 - **<span style="color: #4169E1;">OpenFeign</span>**
 - **<span style="color: #4169E1;">Lombok</span>**
@@ -79,12 +81,22 @@ Response:
 }
 ```
 
+## <span style="color: #2E8B57;">Asynchronous Processing</span>
+
+The microservice includes a JMS consumer that processes workload messages from the `Asynchronous.Task` queue. Messages are expected in the format:
+
+```
+TrainerWorkload[username=john.trainer, firstName=John, lastName=Smith, active=true, trainingDate=2024-01-15T10:30:00Z, trainingDuration=60]
+```
+
 ## <span style="color: #2E8B57;">Configuration</span>
 
 ### Application Properties (`application.yml`)
 
 - **Service Name**: `microservice-task`
 - **Database**: H2 in-memory database
+- **Message Queue**: `Asynchronous.Task`
+- **Artemis Broker**: `tcp://localhost:61616`
 - **Port**: Dynamic (0) - assigned by Eureka
 - **Eureka Server**: `http://localhost:8762/eureka`
 
@@ -96,6 +108,7 @@ This microservice registers with Eureka Server and can be discovered by other se
 
 - Uses Lombok for reducing boilerplate code
 - H2 database console available for debugging
+- JMS consumer processes workload messages asynchronously
 - Dynamic port assignment for multiple instances
 - Eureka client configuration for service discovery
 - OpenFeign ready for inter-service communication
