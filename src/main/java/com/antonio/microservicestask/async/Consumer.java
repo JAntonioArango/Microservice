@@ -43,7 +43,6 @@ public class Consumer {
     private Map<String, String> parseToStringFormat(String msg) {
         Map<String, String> data = new HashMap<>();
 
-        // Remove "TrainerWorkload[" and "]"
         String content = msg.substring(msg.indexOf('[') + 1, msg.lastIndexOf(']'));
         String[] pairs = content.split(", ");
 
@@ -74,7 +73,7 @@ public class Consumer {
         try {
             return Date.from(Instant.parse(value));
         } catch (Exception e) {
-            log.warn("Failed to parse date: {}", value, e);
+            log.error("Error parsing date: {}", value, e);
             return null;
         }
     }

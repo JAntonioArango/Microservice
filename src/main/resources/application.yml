@@ -12,6 +12,10 @@ spring:
     broker-url: ${SPRING_ARTEMIS_BROKER_URL:tcp://localhost:61616}
     user: ${SPRING_ARTEMIS_USER:artemis}
     password: ${SPRING_ARTEMIS_PASSWORD:artemis}
+  
+  jms:
+    listener:
+      auto-startup: ${JMS_ENABLED:true}
 
   datasource:
     url: jdbc:h2:mem:microdb
@@ -33,8 +37,9 @@ server:
 
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    register-with-eureka: ${EUREKA_ENABLED:true}
+    fetch-registry: ${EUREKA_ENABLED:true}
+    enabled: ${EUREKA_ENABLED:true}
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8762/eureka}
 
