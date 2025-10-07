@@ -6,7 +6,7 @@ import org.springframework.lang.Nullable;
 
 public interface WorkloadService {
 
-    TrainerWorkload saveWorkload(TrainerWorkload trainerWorkload);
+    void saveWorkload(TrainerWorkload trainerWorkload);
 
     @Nullable
     TrainerWorkloadSummary getWorkloadSummary(String username);

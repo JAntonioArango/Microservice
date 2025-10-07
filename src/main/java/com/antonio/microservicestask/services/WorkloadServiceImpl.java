@@ -20,41 +20,48 @@ public class WorkloadServiceImpl implements WorkloadService{
     private WorkloadRepo workloadRepo;
 
     @Override
-    public TrainerWorkload saveWorkload(TrainerWorkload trainerWorkload) {
-        return workloadRepo.save(trainerWorkload);
+    public void saveWorkload(TrainerWorkload trainerWorkload) {
+        workloadRepo.save(trainerWorkload);
     }
 
     @Override
     @Nullable
     public TrainerWorkloadSummary getWorkloadSummary(String username) {
         List<TrainerWorkload> workloads = workloadRepo.findByUsername(username);
-
-        if (workloads.isEmpty()) return null;
-
-        TrainerWorkload first = workloads.get(0);
         
+        if (workloads.isEmpty()) return null;
+        
+        TrainerWorkload first = workloads.getFirst();
+        return new TrainerWorkloadSummary(
+            first.getUsername(),
+            first.getFirstName(),
+            first.getLastName(),
+            first.isActive(),
+            extractYears(workloads),
+            extractMonths(workloads),
+            calculateTotalDuration(workloads)
+        );
+    }
+    
+    private List<Integer> extractYears(List<TrainerWorkload> workloads) {
         return workloads.stream()
-                .collect(Collectors.collectingAndThen(
-                    Collectors.toList(),
-                    list -> new TrainerWorkloadSummary(
-                        first.getUsername(),
-                        first.getFirstName(),
-                        first.getLastName(),
-                        first.isActive(),
-                        list.stream()
-                            .map(w -> w.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear())
-                            .distinct()
-                            .sorted()
-                            .collect(Collectors.toList()),
-                        list.stream()
-                            .map(w -> w.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH))
-                            .distinct()
-                            .collect(Collectors.toList()),
-                        list.stream()
-                            .mapToInt(TrainerWorkload::getTrainingDuration)
-                            .sum()
-                    )
-                ));
+            .map(w -> w.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear())
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
+    }
+    
+    private List<String> extractMonths(List<TrainerWorkload> workloads) {
+        return workloads.stream()
+            .map(w -> w.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH))
+            .distinct()
+            .collect(Collectors.toList());
+    }
+    
+    private int calculateTotalDuration(List<TrainerWorkload> workloads) {
+        return workloads.stream()
+            .mapToInt(TrainerWorkload::getTrainingDuration)
+            .sum();
     }
 
     @Override

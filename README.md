@@ -4,6 +4,7 @@
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Eureka](https://img.shields.io/badge/Eureka-Client-green)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)
 
 A Spring Boot microservice for managing trainer workloads with Eureka service discovery integration.
 
@@ -21,6 +22,9 @@ It's designed to work as part of a microservices architecture with Eureka servic
 - **In-Memory Database**: H2 database for development and testing
 - **Health Monitoring**: Spring Boot Actuator for health checks
 - **OpenFeign Support**: Ready for inter-service communication
+- **API Documentation**: Swagger/OpenAPI 3.0 integration
+- **Input Validation**: Spring Boot Validation for request validation
+- **Exception Handling**: Custom exception handling for workload operations
 
 ## <span style="color: #2E8B57;">Technology Stack</span>
 
@@ -32,6 +36,8 @@ It's designed to work as part of a microservices architecture with Eureka servic
 - **<span style="color: #4169E1;">Apache Artemis JMS</span>**
 - **<span style="color: #4169E1;">Eureka Client</span>**
 - **<span style="color: #4169E1;">OpenFeign</span>**
+- **<span style="color: #4169E1;">Swagger/OpenAPI 3.0</span>**
+- **<span style="color: #4169E1;">Spring Boot Validation</span>**
 - **<span style="color: #4169E1;">Lombok</span>**
 - **<span style="color: #4169E1;">Maven</span>**
 - **<span style="color: #4169E1;">Docker</span>**
@@ -94,15 +100,43 @@ TrainerWorkload[username=john.trainer, firstName=John, lastName=Smith, active=tr
 ### Application Properties (`application.yml`)
 
 - **Service Name**: `microservice-task`
-- **Database**: H2 in-memory database
+- **Database**: H2 in-memory database (`jdbc:h2:mem:microdb`)
 - **Message Queue**: `Asynchronous.Task`
-- **Artemis Broker**: `tcp://localhost:61616`
+- **Artemis Broker**: `tcp://localhost:61616` (configurable via `SPRING_ARTEMIS_BROKER_URL`)
 - **Port**: Dynamic (0) - assigned by Eureka
-- **Eureka Server**: `http://localhost:8762/eureka`
+- **Eureka Server**: `http://localhost:8762/eureka` (configurable via `EUREKA_URI`)
+- **H2 Console**: Enabled for development
+- **JPA**: Hibernate with H2 dialect, DDL auto-update enabled
 
 ## <span style="color: #2E8B57;">Service Discovery</span>
 
 This microservice registers with Eureka Server and can be discovered by other services using the service name `microservice-task`.
+
+## <span style="color: #2E8B57;">API Documentation</span>
+
+The microservice includes Swagger/OpenAPI 3.0 documentation available at:
+- **Swagger UI**: `http://localhost:{port}/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:{port}/v3/api-docs`
+
+## <span style="color: #2E8B57;">Docker Support</span>
+
+### Build and Run
+```bash
+# Build the application
+mvn clean package
+
+# Build Docker image
+docker build -t microservices-task .
+
+# Run with Docker Compose
+docker-compose up
+```
+
+### Environment Variables
+- `EUREKA_URI`: Eureka server URL (default: `http://localhost:8762/eureka`)
+- `SPRING_ARTEMIS_BROKER_URL`: Artemis broker URL (default: `tcp://localhost:61616`)
+- `SPRING_ARTEMIS_USER`: Artemis username (default: `artemis`)
+- `SPRING_ARTEMIS_PASSWORD`: Artemis password (default: `artemis`)
 
 ## <span style="color: #2E8B57;">Development Notes</span>
 
@@ -112,3 +146,6 @@ This microservice registers with Eureka Server and can be discovered by other se
 - Dynamic port assignment for multiple instances
 - Eureka client configuration for service discovery
 - OpenFeign ready for inter-service communication
+- Custom exception handling for workload operations
+- Input validation using Spring Boot Validation
+- Comprehensive API documentation with Swagger

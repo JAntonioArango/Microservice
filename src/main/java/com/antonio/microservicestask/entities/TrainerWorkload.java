@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class TrainerWorkload implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
