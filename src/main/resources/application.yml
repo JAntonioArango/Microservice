@@ -15,7 +15,7 @@ spring:
   
   jms:
     listener:
-      auto-startup: ${JMS_ENABLED:false}
+      auto-startup: ${JMS_ENABLED:true}
 
   datasource:
     url: jdbc:h2:mem:microdb

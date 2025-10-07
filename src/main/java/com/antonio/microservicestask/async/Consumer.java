@@ -1,20 +1,16 @@
 package com.antonio.microservicestask.async;
 
 import com.antonio.microservicestask.entities.TrainerWorkload;
-import com.antonio.microservicestask.exceptions.MessageExtractionException;
-import com.antonio.microservicestask.exceptions.WorkloadProcessingException;
-import com.antonio.microservicestask.exceptions.WorkloadValidationException;
 import com.antonio.microservicestask.services.WorkloadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import java.util.Set;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -22,72 +18,63 @@ import java.util.Set;
 public class Consumer {
 
     private final WorkloadService workloadService;
-    private final Validator validator;
 
     @JmsListener(destination = "${app.queue}")
-    public void onMessage(ObjectMessage objectMessage) {
+    public void onMessage(String msg) {
         try {
-            log.info("Received ObjectMessage with JMSMessageID: {}", objectMessage.getJMSMessageID());
-            
-            TrainerWorkload workload = extractAndValidate(objectMessage);
-            processWorkload(workload);
-            
+            log.info("Received message: {}", msg);
+            TrainerWorkload workload = parseMessage(msg);
+            workloadService.saveWorkload(workload);
             log.info("Successfully processed workload for username: {}", workload.getUsername());
-            
-        } catch (MessageExtractionException | WorkloadValidationException e) {
-            log.error("Message processing failed: {}", e.getMessage(), e);
-            throw e;
         } catch (Exception e) {
-            log.error("Unexpected error processing workload", e);
-            throw new WorkloadProcessingException("Failed to process workload message", e);
+            log.error("Error processing message: {}", msg, e);
         }
     }
 
-    private TrainerWorkload extractAndValidate(ObjectMessage objectMessage) throws JMSException {
-        TrainerWorkload workload = extractObject(objectMessage);
-        validateWorkload(workload);
+    private TrainerWorkload parseMessage(String msg) {
+        if (msg == null || msg.trim().isEmpty()) {
+            throw new IllegalArgumentException("Message cannot be null or empty");
+        }
+
+        Map<String, String> data = parseToStringFormat(msg);
+        return buildTrainerWorkload(data);
+    }
+
+    private Map<String, String> parseToStringFormat(String msg) {
+        Map<String, String> data = new HashMap<>();
+
+        String content = msg.substring(msg.indexOf('[') + 1, msg.lastIndexOf(']'));
+        String[] pairs = content.split(", ");
+
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=", 2);
+            if (keyValue.length == 2) {
+                data.put(keyValue[0].trim(), keyValue[1].trim());
+            }
+        }
+        return data;
+    }
+
+    private TrainerWorkload buildTrainerWorkload(Map<String, String> data) {
+        TrainerWorkload workload = new TrainerWorkload();
+
+        workload.setUsername(data.get("username") + "async");
+        workload.setFirstName(data.get("firstName"));
+        workload.setLastName(data.get("lastName"));
+        workload.setActive(Boolean.parseBoolean(data.get("active")));
+        workload.setTrainingDate(parseDate(data.get("trainingDate")));
+        workload.setTrainingDuration(Integer.parseInt(data.get("trainingDuration")));
+
         return workload;
     }
 
-    private TrainerWorkload extractObject(ObjectMessage objectMessage) throws JMSException {
-        Object messageObject = objectMessage.getObject();
-
-        nullChecker(messageObject);
-
-        if (messageObject instanceof TrainerWorkload trainerWorkload) {
-            return trainerWorkload;
+    private Date parseDate(String value) {
+        if (value == null) return null;
+        try {
+            return Date.from(Instant.parse(value));
+        } catch (Exception e) {
+            log.error("Error parsing date: {}", value, e);
+            return null;
         }
-
-        throw new MessageExtractionException("Expected TrainerWorkload, but received: " + messageObject.getClass().getSimpleName());
-    }
-
-    private void nullChecker(Object messageObject) {
-        if (messageObject == null) {
-            throw new MessageExtractionException("ObjectMessage contains null object");
-        }
-    }
-
-    private void validateWorkload(TrainerWorkload workload) {
-        Set<ConstraintViolation<TrainerWorkload>> violations = validator.validate(workload);
-
-        if (!violations.isEmpty()) {
-            String errorMessage = getString(violations);
-
-            throw new WorkloadValidationException("TrainerWorkload validation failed: " + errorMessage);
-        }
-
-        log.debug("Validation passed for TrainerWorkload: {}", workload.getUsername());
-    }
-
-    private String getString(Set<ConstraintViolation<TrainerWorkload>> violations) {
-        return violations.stream()
-            .map(ConstraintViolation::getMessage)
-            .reduce((m1, m2) -> m1 + ", " + m2)
-            .orElse("Validation failed");
-    }
-
-    private void processWorkload(TrainerWorkload workload) {
-        log.info("Processing workload for username: {}", workload.getUsername());
-        workloadService.saveWorkload(workload);
     }
 }
