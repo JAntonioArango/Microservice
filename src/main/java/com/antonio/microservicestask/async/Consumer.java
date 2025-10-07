@@ -46,7 +46,7 @@ public class Consumer {
         // Remove "TrainerWorkload[" and "]"
         String content = msg.substring(msg.indexOf('[') + 1, msg.lastIndexOf(']'));
         String[] pairs = content.split(", ");
-        
+
         for (String pair : pairs) {
             String[] keyValue = pair.split("=", 2);
             if (keyValue.length == 2) {
@@ -58,14 +58,14 @@ public class Consumer {
 
     private TrainerWorkload buildTrainerWorkload(Map<String, String> data) {
         TrainerWorkload workload = new TrainerWorkload();
-        
+
         workload.setUsername(data.get("username") + "async");
         workload.setFirstName(data.get("firstName"));
         workload.setLastName(data.get("lastName"));
         workload.setActive(Boolean.parseBoolean(data.get("active")));
         workload.setTrainingDate(parseDate(data.get("trainingDate")));
         workload.setTrainingDuration(Integer.parseInt(data.get("trainingDuration")));
-        
+
         return workload;
     }
 
