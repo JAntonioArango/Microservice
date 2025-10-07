@@ -4,6 +4,7 @@ import com.antonio.microservicestask.dto.TrainerWorkloadSummary;
 import com.antonio.microservicestask.entities.TrainerWorkload;
 import com.antonio.microservicestask.repositories.WorkloadRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -24,10 +25,9 @@ public class WorkloadServiceImpl implements WorkloadService{
     }
 
     @Override
+    @Nullable
     public TrainerWorkloadSummary getWorkloadSummary(String username) {
-        List<TrainerWorkload> workloads = workloadRepo.findAll().stream()
-                .filter(w -> w.getUsername().equals(username))
-                .collect(Collectors.toList());
+        List<TrainerWorkload> workloads = workloadRepo.findByUsername(username);
 
         if (workloads.isEmpty()) return null;
 

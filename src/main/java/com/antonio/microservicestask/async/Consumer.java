@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -18,64 +19,65 @@ import java.util.Map;
 public class Consumer {
 
     private final WorkloadService workloadService;
+    private final Validator validator;
 
     @JmsListener(destination = "${app.queue}")
-    public void onMessage(String msg) {
+    public void onMessage(ObjectMessage objectMessage) {
         try {
-            log.info("Received message: {}", msg);
-            TrainerWorkload workload = parseMessage(msg);
-            workloadService.saveWorkload(workload);
+            log.info("Received ObjectMessage with JMSMessageID: {}", objectMessage.getJMSMessageID());
+            
+            TrainerWorkload workload = extractAndValidate(objectMessage);
+            processWorkload(workload);
+            
             log.info("Successfully processed workload for username: {}", workload.getUsername());
+            
         } catch (Exception e) {
-            log.error("Error processing message: {}", msg, e);
+            log.error("Error processing ObjectMessage", e);
+            throw new RuntimeException("Failed to process workload message", e);
         }
     }
 
-    private TrainerWorkload parseMessage(String msg) {
-        if (msg == null || msg.trim().isEmpty()) {
-            throw new IllegalArgumentException("Message cannot be null or empty");
-        }
-
-        Map<String, String> data = parseToStringFormat(msg);
-        return buildTrainerWorkload(data);
-    }
-
-    private Map<String, String> parseToStringFormat(String msg) {
-        Map<String, String> data = new HashMap<>();
-
-        // Remove "TrainerWorkload[" and "]"
-        String content = msg.substring(msg.indexOf('[') + 1, msg.lastIndexOf(']'));
-        String[] pairs = content.split(", ");
-        
-        for (String pair : pairs) {
-            String[] keyValue = pair.split("=", 2);
-            if (keyValue.length == 2) {
-                data.put(keyValue[0].trim(), keyValue[1].trim());
-            }
-        }
-        return data;
-    }
-
-    private TrainerWorkload buildTrainerWorkload(Map<String, String> data) {
-        TrainerWorkload workload = new TrainerWorkload();
-        
-        workload.setUsername(data.get("username") + "async");
-        workload.setFirstName(data.get("firstName"));
-        workload.setLastName(data.get("lastName"));
-        workload.setActive(Boolean.parseBoolean(data.get("active")));
-        workload.setTrainingDate(parseDate(data.get("trainingDate")));
-        workload.setTrainingDuration(Integer.parseInt(data.get("trainingDuration")));
-        
+    private TrainerWorkload extractAndValidate(ObjectMessage objectMessage) throws JMSException {
+        TrainerWorkload workload = extractObject(objectMessage, TrainerWorkload.class);
+        validateWorkload(workload);
         return workload;
     }
 
-    private Date parseDate(String value) {
-        if (value == null) return null;
-        try {
-            return Date.from(Instant.parse(value));
-        } catch (Exception e) {
-            log.warn("Failed to parse date: {}", value, e);
-            return null;
+    private <T> T extractObject(ObjectMessage objectMessage, Class<T> expectedType) throws JMSException {
+        Object messageObject = objectMessage.getObject();
+        
+        if (messageObject == null) {
+            throw new IllegalArgumentException("ObjectMessage contains null object");
         }
+        
+        if (!expectedType.isInstance(messageObject)) {
+            throw new IllegalArgumentException(
+                String.format("Expected %s, but received: %s", 
+                             expectedType.getSimpleName(), 
+                             messageObject.getClass().getName())
+            );
+        }
+        
+        return expectedType.cast(messageObject);
+    }
+
+    private void validateWorkload(TrainerWorkload workload) {
+        Set<ConstraintViolation<TrainerWorkload>> violations = validator.validate(workload);
+        
+        if (!violations.isEmpty()) {
+            String errorMessage = violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .reduce((m1, m2) -> m1 + ", " + m2)
+                .orElse("Validation failed");
+            
+            throw new IllegalArgumentException("TrainerWorkload validation failed: " + errorMessage);
+        }
+        
+        log.debug("Validation passed for TrainerWorkload: {}", workload.getUsername());
+    }
+
+    private void processWorkload(TrainerWorkload workload) {
+        log.info("Processing workload for username: {}", workload.getUsername());
+        workloadService.saveWorkload(workload);
     }
 }
