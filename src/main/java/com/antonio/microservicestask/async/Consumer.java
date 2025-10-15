@@ -22,12 +22,15 @@ public class Consumer {
     @JmsListener(destination = "${app.queue}")
     public void onMessage(String msg) {
         try {
+            log.info("Transaction started: JMS message processing");
             log.info("Received message: {}", msg);
+            log.debug("Operation: Parsing message");
             TrainerWorkload workload = parseMessage(msg);
+            log.debug("Operation: Saving workload via service");
             workloadService.saveWorkload(workload);
-            log.info("Successfully processed workload for username: {}", workload.getUsername());
+            log.info("Transaction completed: Successfully processed workload for username: {}", workload.getUsername());
         } catch (Exception e) {
-            log.error("Error processing message: {}", msg, e);
+            log.error("Transaction failed: Error processing message: {}", msg, e);
         }
     }
 

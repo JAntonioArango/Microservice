@@ -3,6 +3,11 @@ spring:
   application:
     name: microservice-task
 
+  data:
+    mongodb:
+      database: Microservice-NoSQL-basics
+      uri: mongodb://localhost:27017/?appName=MongoDB+Compass&directConnection=true&serverSelectionTimeoutMS=2000
+
   h2:
     console:
       enabled: true
@@ -55,3 +60,6 @@ app:
 logging:
   level:
     org.springframework.jms: INFO
+    com.antonio.microservicestask: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{transactionId}] %logger{36} - %msg%n"

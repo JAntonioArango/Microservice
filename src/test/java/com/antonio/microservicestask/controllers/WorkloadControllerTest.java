@@ -3,6 +3,7 @@ package com.antonio.microservicestask.controllers;
 import com.antonio.microservicestask.dto.TrainerWorkloadSummary;
 import com.antonio.microservicestask.entities.TrainerWorkload;
 import com.antonio.microservicestask.services.WorkloadService;
+import com.antonio.microservicestask.services.TrainerSummaryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ class WorkloadControllerTest {
 
     @MockBean
     private WorkloadService workloadService;
+
+    @MockBean
+    private TrainerSummaryService trainerSummaryService;
 
     @Autowired
     private ObjectMapper objectMapper;

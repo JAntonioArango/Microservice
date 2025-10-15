@@ -6,12 +6,12 @@
 ![Eureka](https://img.shields.io/badge/Eureka-Client-green)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)
 
-A Spring Boot microservice for managing trainer workloads with Eureka service discovery integration.
+A Spring Boot microservice for managing trainer workloads with MongoDB NoSQL database and Eureka service discovery integration.
 
 ## <span style="color: #2E8B57;">Overview</span>
 
 This microservice provides REST APIs to manage trainer workload data, including saving workload information, retrieving workload summaries, and deleting workload records.  <br>
-It's designed to work as part of a microservices architecture with Eureka service discovery.
+It's designed to work as part of a microservices architecture with MongoDB NoSQL database and Eureka service discovery.
 
 ## <span style="color: #2E8B57;">Features</span>
 
@@ -19,7 +19,8 @@ It's designed to work as part of a microservices architecture with Eureka servic
 - **Workload Summary**: Get comprehensive workload summaries by trainer username
 - **Asynchronous Processing**: JMS message consumer for workload data processing
 - **Service Discovery**: Eureka client integration for microservices architecture
-- **In-Memory Database**: H2 database for development and testing
+- **NoSQL Database**: MongoDB for scalable document-based storage
+- **Database Indexing**: Compound indexes for optimized query performance
 - **Health Monitoring**: Spring Boot Actuator for health checks
 - **OpenFeign Support**: Ready for inter-service communication
 - **API Documentation**: Swagger/OpenAPI 3.0 integration
@@ -31,8 +32,9 @@ It's designed to work as part of a microservices architecture with Eureka servic
 - **<span style="color: #4169E1;">Java 21</span>**
 - **<span style="color: #4169E1;">Spring Boot 3.3.6</span>**
 - **<span style="color: #4169E1;">Spring Cloud 2023.0.6</span>**
-- **<span style="color: #4169E1;">Spring Data JPA</span>**
-- **<span style="color: #4169E1;">H2 Database</span>**
+- **<span style="color: #4169E1;">Spring Data MongoDB</span>**
+- **<span style="color: #4169E1;">MongoDB NoSQL Database</span>**
+- **<span style="color: #4169E1;">Spring Session Data MongoDB</span>**
 - **<span style="color: #4169E1;">Apache Artemis JMS</span>**
 - **<span style="color: #4169E1;">Eureka Client</span>**
 - **<span style="color: #4169E1;">OpenFeign</span>**
@@ -100,13 +102,14 @@ TrainerWorkload[username=john.trainer, firstName=John, lastName=Smith, active=tr
 ### Application Properties (`application.yml`)
 
 - **Service Name**: `microservice-task`
-- **Database**: H2 in-memory database (`jdbc:h2:mem:microdb`)
+- **Database**: MongoDB NoSQL (`Microservice-NoSQL-basics`)
+- **MongoDB URI**: `mongodb://localhost:27017/` with connection timeout
 - **Message Queue**: `Asynchronous.Task`
 - **Artemis Broker**: `tcp://localhost:61616` (configurable via `SPRING_ARTEMIS_BROKER_URL`)
 - **Port**: Dynamic (0) - assigned by Eureka
 - **Eureka Server**: `http://localhost:8762/eureka` (configurable via `EUREKA_URI`)
-- **H2 Console**: Enabled for development
-- **JPA**: Hibernate with H2 dialect, DDL auto-update enabled
+- **MongoDB Indexes**: Compound indexes on firstName and lastName for performance
+- **Session Management**: MongoDB-based session storage
 
 ## <span style="color: #2E8B57;">Service Discovery</span>
 
@@ -137,15 +140,20 @@ docker-compose up
 - `SPRING_ARTEMIS_BROKER_URL`: Artemis broker URL (default: `tcp://localhost:61616`)
 - `SPRING_ARTEMIS_USER`: Artemis username (default: `artemis`)
 - `SPRING_ARTEMIS_PASSWORD`: Artemis password (default: `artemis`)
+- `MONGODB_URI`: MongoDB connection string (default: `mongodb://localhost:27017/`)
+- `MONGODB_DATABASE`: MongoDB database name (default: `Microservice-NoSQL-basics`)
 
 ## <span style="color: #2E8B57;">Development Notes</span>
 
 - Uses Lombok for reducing boilerplate code
-- H2 database console available for debugging
+- MongoDB NoSQL database for scalable document storage
+- Compound indexes automatically created for performance optimization
+- Document-based data model with embedded year and month summaries
 - JMS consumer processes workload messages asynchronously
 - Dynamic port assignment for multiple instances
 - Eureka client configuration for service discovery
 - OpenFeign ready for inter-service communication
 - Custom exception handling for workload operations
 - Input validation using Spring Boot Validation
+- MongoDB session management for distributed sessions
 - Comprehensive API documentation with Swagger

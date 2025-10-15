@@ -95,6 +95,16 @@
             <version>2.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-mongodb</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -161,6 +171,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/dto/**</exclude>
+                                <exclude>**/config/**</exclude>
                             </excludes>
                             <rules>
                                 <rule>
