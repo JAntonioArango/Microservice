@@ -22,7 +22,7 @@ class ConsumerUnitTest {
     private Consumer consumer;
 
     @Test
-    void onMessage_ValidMessage_ShouldProcessSuccessfully() {
+    void onMessage_validTrainerWorkloadMessage_processesSuccessfully() {
         String message = "TrainerWorkload[username=test, firstName=John, lastName=Doe, active=true, trainingDate=2024-01-15T10:30:00Z, trainingDuration=60]";
 
         consumer.onMessage(message);
@@ -39,19 +39,19 @@ class ConsumerUnitTest {
     }
 
     @Test
-    void onMessage_NullMessage_ShouldHandleGracefully() {
+    void onMessage_nullMessage_handlesGracefully() {
         consumer.onMessage(null);
         verify(workloadService, never()).saveWorkload(any());
     }
 
     @Test
-    void onMessage_EmptyMessage_ShouldHandleGracefully() {
+    void onMessage_emptyMessage_handlesGracefully() {
         consumer.onMessage("");
         verify(workloadService, never()).saveWorkload(any());
     }
 
     @Test
-    void onMessage_InvalidFormat_ShouldHandleGracefully() {
+    void onMessage_invalidMessageFormat_handlesGracefully() {
         consumer.onMessage("invalid message format");
         verify(workloadService, never()).saveWorkload(any());
     }

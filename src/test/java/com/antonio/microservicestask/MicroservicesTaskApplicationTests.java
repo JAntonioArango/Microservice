@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MicroservicesTaskApplicationTests {
 
     @Test
-    void contextLoads() {
+    void contextLoads_springBootApplication_loadsSuccessfully() {
     }
 
 }

@@ -38,7 +38,7 @@ class TrainerSummaryServiceTest {
     }
 
     @Test
-    void testProcessTrainingEventNewTrainer() {
+    void processTrainingEvent_newTrainer_savesTrainerSummary() {
         when(repository.findFirstByUsername("john.doe")).thenReturn(Optional.empty());
 
         service.processTrainingEvent(workload);
@@ -47,7 +47,7 @@ class TrainerSummaryServiceTest {
     }
 
     @Test
-    void testProcessTrainingEventExistingTrainer() {
+    void processTrainingEvent_existingTrainer_updatesTrainerSummary() {
         TrainerSummary existing = new TrainerSummary();
         existing.setUsername("john.doe");
         existing.setYears(new ArrayList<>());
@@ -60,7 +60,7 @@ class TrainerSummaryServiceTest {
     }
 
     @Test
-    void testUpdateTrainerSummary() {
+    void updateTrainerSummary_validData_callsRepositoryUpdate() {
         List<YearSummary> years = new ArrayList<>();
         
         service.updateTrainerSummary("john.doe", "John", "Doe", true, years);

@@ -25,7 +25,7 @@ class WorkloadServiceImplTest {
     private WorkloadServiceImpl workloadService;
 
     @Test
-    void saveWorkload_ShouldCallRepository() {
+    void saveWorkload_validWorkload_callsRepository() {
         TrainerWorkload workload = new TrainerWorkload();
         workload.setUsername("test");
 
@@ -35,7 +35,7 @@ class WorkloadServiceImplTest {
     }
 
     @Test
-    void getWorkloadSummary_WithWorkloads_ShouldReturnSummary() {
+    void getWorkloadSummary_existingWorkloads_returnsSummary() {
         TrainerWorkload workload1 = createWorkload("test", "Test", "User", new Date(), 60);
         TrainerWorkload workload2 = createWorkload("test", "Test", "User", new Date(), 90);
         List<TrainerWorkload> workloads = List.of(workload1, workload2);
@@ -52,7 +52,7 @@ class WorkloadServiceImplTest {
     }
 
     @Test
-    void getWorkloadSummary_WithEmptyList_ShouldReturnNull() {
+    void getWorkloadSummary_noWorkloads_returnsNull() {
         when(workloadRepo.findByUsername("test")).thenReturn(List.of());
 
         TrainerWorkloadSummary result = workloadService.getWorkloadSummary("test");
@@ -61,7 +61,7 @@ class WorkloadServiceImplTest {
     }
 
     @Test
-    void deleteById_ShouldCallRepository() {
+    void deleteById_validId_callsRepository() {
         workloadService.deleteById(1L);
 
         verify(workloadRepo).deleteById(1L);

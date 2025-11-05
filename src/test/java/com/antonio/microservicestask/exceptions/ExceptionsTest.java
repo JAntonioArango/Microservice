@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExceptionsTest {
 
     @Test
-    void testMessageExtractionException() {
+    void messageExtractionExceptionConstructor_messageProvided_setsMessageCorrectly() {
         String message = "Test message";
         MessageExtractionException exception = new MessageExtractionException(message);
         
@@ -16,7 +16,7 @@ class ExceptionsTest {
     }
 
     @Test
-    void testWorkloadProcessingException() {
+    void workloadProcessingExceptionConstructor_messageAndCauseProvided_setsBothCorrectly() {
         String message = "Processing error";
         Throwable cause = new RuntimeException("Cause");
         WorkloadProcessingException exception = new WorkloadProcessingException(message, cause);
@@ -26,7 +26,7 @@ class ExceptionsTest {
     }
 
     @Test
-    void testWorkloadValidationException() {
+    void workloadValidationExceptionConstructor_messageProvided_setsMessageCorrectly() {
         String message = "Validation error";
         WorkloadValidationException exception = new WorkloadValidationException(message);
         

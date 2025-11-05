@@ -23,7 +23,7 @@ class TrainerSummaryTest {
     }
 
     @Test
-    void testValidTrainerSummary() {
+    void validate_validTrainerSummary_noViolations() {
         trainerSummary.setUsername("john.doe");
         trainerSummary.setFirstName("John");
         trainerSummary.setLastName("Doe");
@@ -34,7 +34,7 @@ class TrainerSummaryTest {
     }
 
     @Test
-    void testUsernameNotBlank() {
+    void validate_blankUsername_violationReturned() {
         trainerSummary.setUsername("");
         trainerSummary.setFirstName("John");
         trainerSummary.setLastName("Doe");
@@ -45,7 +45,7 @@ class TrainerSummaryTest {
     }
 
     @Test
-    void testFirstNameNotBlank() {
+    void validate_blankFirstName_violationReturned() {
         trainerSummary.setUsername("john.doe");
         trainerSummary.setFirstName("");
         trainerSummary.setLastName("Doe");
@@ -56,7 +56,7 @@ class TrainerSummaryTest {
     }
 
     @Test
-    void testLastNameNotBlank() {
+    void validate_blankLastName_violationReturned() {
         trainerSummary.setUsername("john.doe");
         trainerSummary.setFirstName("John");
         trainerSummary.setLastName("");

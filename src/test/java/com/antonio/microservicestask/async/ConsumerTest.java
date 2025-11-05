@@ -20,7 +20,7 @@ class ConsumerTest {
     private WorkloadService workloadService;
 
     @Test
-    void testConsumerSavesData() throws InterruptedException {
+    void onMessage_validTrainerWorkloadMessage_savesDataSuccessfully() throws InterruptedException {
         String message = "TrainerWorkload[username=junit.test, firstName=JUnit, lastName=Test, active=true, trainingDate=2024-01-15T10:30:00Z, trainingDuration=90]";
 
         jmsTemplate.convertAndSend("test.queue", message);

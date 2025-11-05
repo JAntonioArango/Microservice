@@ -143,6 +143,19 @@ docker-compose up
 - `MONGODB_URI`: MongoDB connection string (default: `mongodb://localhost:27017/`)
 - `MONGODB_DATABASE`: MongoDB database name (default: `Microservice-NoSQL-basics`)
 
+## <span style="color: #2E8B57;">Testing Strategy</span>
+
+### Unit Test Naming Convention
+All unit tests follow the `MethodName_Scenario_ExpectedBehavior` naming pattern for clarity and maintainability:
+- **MethodName**: The method being tested
+- **Scenario**: The specific condition or input
+- **ExpectedBehavior**: The expected outcome
+
+Examples:
+- `saveWorkload_validWorkload_callsRepository()`
+- `validate_blankUsername_violationReturned()`
+- `onMessage_nullMessage_handlesGracefully()`
+
 ## <span style="color: #2E8B57;">Development Notes</span>
 
 - Uses Lombok for reducing boilerplate code

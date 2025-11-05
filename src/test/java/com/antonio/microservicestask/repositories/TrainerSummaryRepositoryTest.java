@@ -21,7 +21,7 @@ class TrainerSummaryRepositoryTest {
     private TrainerSummaryRepository repository;
 
     @Test
-    void testFindByUsername() {
+    void findFirstByUsername_existingUsername_returnsTrainerSummary() {
         TrainerSummary summary = new TrainerSummary();
         summary.setUsername("john.doe");
         summary.setFirstName("John");
@@ -37,13 +37,13 @@ class TrainerSummaryRepositoryTest {
     }
 
     @Test
-    void testFindByUsernameNotFound() {
+    void findFirstByUsername_nonExistentUsername_returnsEmpty() {
         Optional<TrainerSummary> found = repository.findFirstByUsername("nonexistent");
         assertFalse(found.isPresent());
     }
 
     @Test
-    void testSaveAndRetrieve() {
+    void save_validTrainerSummary_savesAndRetrievesSuccessfully() {
         TrainerSummary summary = new TrainerSummary();
         summary.setUsername("jane.smith");
         summary.setFirstName("Jane");
