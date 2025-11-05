@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TrainerWorkloadTest {
 
     @Test
-    void testTrainerWorkloadCreation() {
+    void setProperties_validData_propertiesSetCorrectly() {
         TrainerWorkload workload = new TrainerWorkload();
         workload.setId(1L);
         workload.setUsername("test");
@@ -30,7 +30,7 @@ class TrainerWorkloadTest {
     }
 
     @Test
-    void testEqualsAndHashCode() {
+    void equals_sameUsername_returnsTrue() {
         TrainerWorkload workload1 = new TrainerWorkload();
         workload1.setUsername("test");
         

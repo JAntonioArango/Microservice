@@ -23,7 +23,7 @@ class YearSummaryTest {
     }
 
     @Test
-    void testValidYearSummary() {
+    void validate_validYearSummary_noViolations() {
         yearSummary.setYear(2024);
         yearSummary.setMonths(List.of());
 
@@ -32,7 +32,7 @@ class YearSummaryTest {
     }
 
     @Test
-    void testYearNotNull() {
+    void validate_nullYear_violationReturned() {
         yearSummary.setYear(null);
 
         Set<ConstraintViolation<YearSummary>> violations = validator.validate(yearSummary);

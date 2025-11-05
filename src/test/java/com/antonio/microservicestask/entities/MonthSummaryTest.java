@@ -22,7 +22,7 @@ class MonthSummaryTest {
     }
 
     @Test
-    void testValidMonthSummary() {
+    void validate_validMonthSummary_noViolations() {
         monthSummary.setMonth("January");
         monthSummary.setTotalDuration(120);
 
@@ -31,7 +31,7 @@ class MonthSummaryTest {
     }
 
     @Test
-    void testMonthNotBlank() {
+    void validate_blankMonth_violationReturned() {
         monthSummary.setMonth("");
         monthSummary.setTotalDuration(120);
 
@@ -41,7 +41,7 @@ class MonthSummaryTest {
     }
 
     @Test
-    void testTotalDurationNotNull() {
+    void validate_nullTotalDuration_violationReturned() {
         monthSummary.setMonth("January");
         monthSummary.setTotalDuration(null);
 
@@ -51,7 +51,7 @@ class MonthSummaryTest {
     }
 
     @Test
-    void testTotalDurationPositiveOrZero() {
+    void validate_negativeTotalDuration_violationReturned() {
         monthSummary.setMonth("January");
         monthSummary.setTotalDuration(-10);
 
@@ -61,7 +61,7 @@ class MonthSummaryTest {
     }
 
     @Test
-    void testTotalDurationZero() {
+    void validate_zeroTotalDuration_noViolations() {
         monthSummary.setMonth("January");
         monthSummary.setTotalDuration(0);
 

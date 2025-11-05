@@ -35,7 +35,7 @@ class WorkloadControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void saveTrainerWorkload_ShouldReturnWorkload() throws Exception {
+    void saveTrainerWorkload_validWorkloadData_returnsWorkload() throws Exception {
         TrainerWorkload workload = new TrainerWorkload();
         workload.setUsername("test");
         workload.setFirstName("Test");
@@ -52,7 +52,7 @@ class WorkloadControllerTest {
     }
 
     @Test
-    void getTrainerWorkloadSummary_ShouldReturnSummary() throws Exception {
+    void getTrainerWorkloadSummary_existingUsername_returnsSummary() throws Exception {
         TrainerWorkloadSummary summary = new TrainerWorkloadSummary(
                 "test", "Test", "User", true, List.of(2024), List.of("January"), 120);
 
@@ -65,7 +65,7 @@ class WorkloadControllerTest {
     }
 
     @Test
-    void deleteById_ShouldReturnOk() throws Exception {
+    void deleteById_validId_returnsOk() throws Exception {
         doNothing().when(workloadService).deleteById(1L);
 
         mockMvc.perform(delete("/api/workload/v1/delete/1"))
