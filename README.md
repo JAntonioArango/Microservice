@@ -5,6 +5,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Eureka](https://img.shields.io/badge/Eureka-Client-green)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)
+![Cucumber](https://img.shields.io/badge/Cucumber-BDD-green)
 
 A Spring Boot microservice for managing trainer workloads with MongoDB NoSQL database and Eureka service discovery integration.
 
@@ -40,6 +41,7 @@ It's designed to work as part of a microservices architecture with MongoDB NoSQL
 - **<span style="color: #4169E1;">OpenFeign</span>**
 - **<span style="color: #4169E1;">Swagger/OpenAPI 3.0</span>**
 - **<span style="color: #4169E1;">Spring Boot Validation</span>**
+- **<span style="color: #4169E1;">Cucumber BDD Framework</span>**
 - **<span style="color: #4169E1;">Lombok</span>**
 - **<span style="color: #4169E1;">Maven</span>**
 - **<span style="color: #4169E1;">Docker</span>**
@@ -145,13 +147,35 @@ docker-compose up
 
 ## <span style="color: #2E8B57;">Testing Strategy</span>
 
-### Unit Test Naming Convention
-All unit tests follow the `MethodName_Scenario_ExpectedBehavior` naming pattern for clarity and maintainability:
-- **MethodName**: The method being tested
-- **Scenario**: The specific condition or input
-- **ExpectedBehavior**: The expected outcome
+### BDD with Cucumber Framework
+The project implements Behavior-Driven Development (BDD) using Cucumber framework for component testing:
 
-Examples:
+#### Test Structure
+- **Unit Tests**: Traditional JUnit tests with `MethodName_Scenario_ExpectedBehavior` naming
+- **Component Tests**: Cucumber BDD scenarios testing business logic with mocked dependencies
+- **Feature Files**: Gherkin syntax scenarios in `src/test/resources/features/component/`
+
+#### Cucumber Test Execution
+```bash
+# Run all tests including Cucumber
+mvn test
+
+# Run only Cucumber component tests
+mvn test -Dtest=ComponentTest
+
+# Run specific Cucumber test suite
+mvn test -Dtest=CucumberTest
+```
+
+#### BDD Scenarios
+- **Message Consumer Component**: Tests JMS message processing with various input scenarios
+- **Workload Service Component**: Tests business logic for workload management operations
+
+#### Test Reports
+Cucumber generates HTML reports in `target/cucumber-reports/component/` after test execution.
+
+### Unit Test Naming Convention
+Traditional unit tests follow the `MethodName_Scenario_ExpectedBehavior` pattern:
 - `saveWorkload_validWorkload_callsRepository()`
 - `validate_blankUsername_violationReturned()`
 - `onMessage_nullMessage_handlesGracefully()`
@@ -170,3 +194,6 @@ Examples:
 - Input validation using Spring Boot Validation
 - MongoDB session management for distributed sessions
 - Comprehensive API documentation with Swagger
+- **BDD Testing**: Cucumber framework for component testing with Gherkin scenarios
+- **Test Isolation**: Component tests use mocked dependencies without Spring Boot context
+- **Behavior Specification**: Business requirements expressed as executable specifications

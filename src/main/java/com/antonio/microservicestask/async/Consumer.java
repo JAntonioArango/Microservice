@@ -4,6 +4,7 @@ import com.antonio.microservicestask.entities.TrainerWorkload;
 import com.antonio.microservicestask.services.WorkloadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "JMS_ENABLED", havingValue = "true", matchIfMissing = false)
 public class Consumer {
 
     private final WorkloadService workloadService;

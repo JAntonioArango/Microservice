@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataMongoTest
 @TestPropertySource(properties = {
-    "spring.data.mongodb.database=test-db",
-    "spring.mongodb.embedded.version=3.5.5"
+        "spring.data.mongodb.database=test-db",
+        "spring.mongodb.embedded.version=3.5.5"
 })
 class TrainerSummaryRepositoryTest {
 
@@ -27,7 +27,7 @@ class TrainerSummaryRepositoryTest {
         summary.setFirstName("John");
         summary.setLastName("Doe");
         summary.setActive(true);
-        
+
         repository.save(summary);
 
         Optional<TrainerSummary> found = repository.findFirstByUsername("john.doe");
