@@ -3,6 +3,7 @@ package com.antonio.microservicestask.config;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
@@ -10,6 +11,7 @@ import org.springframework.data.mongodb.core.index.IndexOperations;
 
 @Configuration
 @RequiredArgsConstructor
+@ConditionalOnBean(MongoTemplate.class)
 public class MongoIndexConfig implements CommandLineRunner {
 
     private static final String COLLECTION_TRAINER_SUMMARIES = "trainer_summaries";

@@ -5,8 +5,8 @@ spring:
 
   data:
     mongodb:
-      database: ${MONGODB_DATABASE}
-      uri: ${MONGODB_URI}
+      database: ${MONGODB_DATABASE:Microservice-NoSQL-basics}
+      uri: ${MONGODB_URI:mongodb://localhost:27017/?appName=MongoDB+Compass&directConnection=true&serverSelectionTimeoutMS=2000}
 
   h2:
     console:
@@ -14,13 +14,13 @@ spring:
 
   artemis:
     mode: native
-    broker-url: ${SPRING_ARTEMIS_BROKER_URL}
-    user: ${SPRING_ARTEMIS_USER}
-    password: ${SPRING_ARTEMIS_PASSWORD}
+    broker-url: ${SPRING_ARTEMIS_BROKER_URL:tcp://localhost:61616}
+    user: ${SPRING_ARTEMIS_USER:artemis}
+    password: ${SPRING_ARTEMIS_PASSWORD:artemis}
   
   jms:
     listener:
-      auto-startup: ${JMS_ENABLED}
+      auto-startup: ${JMS_ENABLED:true}
 
   datasource:
     url: jdbc:h2:mem:microdb
@@ -42,11 +42,11 @@ server:
 
 eureka:
   client:
-    register-with-eureka: ${EUREKA_ENABLED}
-    fetch-registry: ${EUREKA_ENABLED}
-    enabled: ${EUREKA_ENABLED}
+    register-with-eureka: ${EUREKA_ENABLED:true}
+    fetch-registry: ${EUREKA_ENABLED:true}
+    enabled: ${EUREKA_ENABLED:true}
     serviceUrl:
-      defaultZone: ${EUREKA_URI}
+      defaultZone: ${EUREKA_URI:http://localhost:8762/eureka}
 
   instance:
     id: ${spring.application.name}:${random.value}
