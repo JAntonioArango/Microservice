@@ -34,6 +34,7 @@ public class WorkloadController {
             @RequestBody TrainerWorkload trainerWorkload) {
         log.info("Transaction started: saveTrainerWorkload for username: {}", trainerWorkload.getUsername());
         log.debug("Operation: Processing workload save request");
+        workloadService.saveWorkload(trainerWorkload);
         log.info("Transaction completed: saveTrainerWorkload");
         return ResponseEntity.ok(trainerWorkload);
     }
@@ -47,7 +48,7 @@ public class WorkloadController {
         log.debug("Operation: Retrieving workload summary");
         TrainerWorkloadSummary summary = workloadService.getWorkloadSummary(username);
         log.info("Transaction completed: getTrainerWorkloadSummary");
-        return ResponseEntity.ok(summary);
+        return summary != null ? ResponseEntity.ok(summary) : ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/delete/{id}")
