@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: microservice-task-integration-test
+
+  data:
+    mongodb:
+      database: integration-test-db
+      uri: mongodb://localhost:27017/integration-test-db?serverSelectionTimeoutMS=1000&connectTimeoutMS=1000
+
+  jms:
+    enabled: false
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jms.artemis.ArtemisAutoConfiguration
+      - org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration
+
+server:
+  port: 0
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+app:
+  queue: Asynchronous.Task
+
+logging:
+  level:
+    com.antonio.microservicestask: WARN
+    org.springframework.jms: WARN
+    org.springframework.data.mongodb: WARN
