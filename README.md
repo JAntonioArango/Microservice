@@ -148,37 +148,62 @@ docker-compose up
 ## <span style="color: #2E8B57;">Testing Strategy</span>
 
 ### BDD with Cucumber Framework
-The project implements Behavior-Driven Development (BDD) using Cucumber framework for component testing:
+The project implements comprehensive testing using Behavior-Driven Development (BDD) with Cucumber framework at multiple levels:
 
 #### Test Structure
+
 - **Unit Tests**: Traditional JUnit tests with `MethodName_Scenario_ExpectedBehavior` naming
 - **Component Tests**: Cucumber BDD scenarios testing business logic with mocked dependencies
-- **Feature Files**: Gherkin syntax scenarios in `src/test/resources/features/component/`
+- **Integration Tests**: Full end-to-end Cucumber scenarios with real Spring Boot application context
 
 #### Cucumber Test Execution
 ```bash
 # Run all tests including Cucumber
 mvn test
 
-# Run only Cucumber component tests
+# Run only component tests (mocked dependencies)
 mvn test -Dtest=ComponentTest
+
+# Run only integration tests (full Spring Boot context)
+mvn test -Dtest=IntegrationTest
 
 # Run specific Cucumber test suite
 mvn test -Dtest=CucumberTest
+
 ```
 
-#### BDD Scenarios
-- **Message Consumer Component**: Tests JMS message processing with various input scenarios
-- **Workload Service Component**: Tests business logic for workload management operations
+#### Component Tests
+
+- **Location**: `src/test/resources/features/component/`
+- **Execution**: Isolated testing with mocked dependencies
+- **Focus**: Business logic validation without external systems
+- **Reports**: `target/cucumber-reports/component/`
+
+
+#### Integration Tests
+- **Location**: `src/test/resources/features/integration/`
+- **Execution**: Full Spring Boot application context with real dependencies
+- **Focus**: End-to-end functionality including database operations, API endpoints, and message processing
+- **Reports**: `target/cucumber-reports/integration/`
+
+#### BDD Test Coverage
+- **Message Consumer**: JMS message processing scenarios (both component and integration)
+- **Workload Service**: Business logic operations with various data scenarios
+- **REST API**: Full HTTP request/response cycles with validation
+- **Database Operations**: MongoDB integration with actual persistence
+- **Error Handling**: Exception scenarios and error response validation
 
 #### Test Reports
-Cucumber generates HTML reports in `target/cucumber-reports/component/` after test execution.
+Cucumber generates comprehensive HTML reports with detailed scenario results:
+- Component test reports: `target/cucumber-reports/component/`
+- Integration test reports: `target/cucumber-reports/integration/`
 
 ### Unit Test Naming Convention
 Traditional unit tests follow the `MethodName_Scenario_ExpectedBehavior` pattern:
 - `saveWorkload_validWorkload_callsRepository()`
 - `validate_blankUsername_violationReturned()`
 - `onMessage_nullMessage_handlesGracefully()`
+
 
 ## <span style="color: #2E8B57;">Development Notes</span>
 
@@ -194,6 +219,9 @@ Traditional unit tests follow the `MethodName_Scenario_ExpectedBehavior` pattern
 - Input validation using Spring Boot Validation
 - MongoDB session management for distributed sessions
 - Comprehensive API documentation with Swagger
-- **BDD Testing**: Cucumber framework for component testing with Gherkin scenarios
-- **Test Isolation**: Component tests use mocked dependencies without Spring Boot context
-- **Behavior Specification**: Business requirements expressed as executable specifications
+- **BDD Testing**: Multi-level Cucumber framework implementation
+    - **Component Level**: Isolated business logic testing with mocked dependencies
+    - **Integration Level**: Full end-to-end testing with real Spring Boot context
+    - **Behavior Specification**: Business requirements expressed as executable Gherkin scenarios
+    - **Test Coverage**: Both positive and negative test scenarios for comprehensive validation
+
